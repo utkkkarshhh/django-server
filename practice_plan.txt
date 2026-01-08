@@ -1,0 +1,88 @@
+Here is a practice plan to help you master Django for interview purposes, based on your project structure.
+
+### 1. Django ORM and Complex Queries
+
+Your model structure is a great starting point for practicing complex queries. Here are some questions to guide you:
+
+**Basic ORM Practice:**
+- Get a list of all students.
+- Get a list of all teachers.
+- Get the details of a specific student by their ID.
+- Filter students who are in a specific class.
+- Filter students who have a specific parent.
+
+**Advanced ORM Practice (Joins):**
+
+Use `select_related` for foreign key and one-to-one relationships (forward and reverse).
+- **Question 1:** Write a query to get all students and their respective classes. The query should be efficient and avoid the N+1 problem.
+- **Question 2:** Get all `StudentParentMapping` entries and include the student and parent information in a single query.
+
+Use `prefetch_related` for many-to-many and reverse foreign key relationships.
+- **Question 3:** Write a query to get all students and list all the subjects they are enrolled in.
+- **Question 4:** Write a query to get all teachers and list all the subjects they teach.
+- **Question 5:** Find all parents and list their children (students).
+- **Question 6:** For each class, get a list of all students in that class.
+
+**Complex Filtering and Aggregation:**
+- **Question 7:** Find all students who are enrolled in more than 3 subjects.
+- **Question 8:** Find the teacher who teaches the maximum number of subjects.
+- **Question 9:** Get a list of all parents who have more than one child in the school.
+- **Question 10:** Calculate the number of students in each class.
+
+### 2. Django Rest Framework (DRF)
+
+You have a `serializers` directory, which is a good place to start.
+
+- **Task 1:** Create serializers for all your models.
+- **Task 2:** Create API endpoints (views) for the following:
+    - A `ListView` to get all students.
+    - A `DetailView` to get a single student's details, including their subjects and parents.
+    - An endpoint to create a new student.
+    - An endpoint to update a student's information.
+- **Task 3:** Implement filtering and searching in your student list API. For example, allow filtering by class name or parent's name.
+- **Task 4:** Implement pagination for the student list API.
+
+### 3. Django Admin
+
+- **Task 1:** Register all your models in `service/admin.py`.
+- **Task 2:** Customize the admin interface. For `StudentAdmin`, display the class and subjects in the list view.
+- **Task 3:** Add search fields to the admin for students, teachers, and parents.
+- **Task 4:** Use `list_filter` to filter students by class.
+
+### 4. Custom Management Commands
+
+You have a `management/commands` directory.
+
+- **Task 1:** You have `populate_school.py`. Enhance it to populate all the tables with realistic dummy data.
+- **Task 2:** Write a new management command that takes a `student_id` and prints all the subjects the student is enrolled in.
+- **Task 3:** Create a command to delete all data from the tables.
+
+### 5. Django Settings and Configuration
+
+- **Task 1:** You have a `.env.example` file. Explain the purpose of each variable in it.
+- **Task 2:** In `django_server/settings.py`, you are likely using `decouple` or a similar library to load environment variables. Explain how it works.
+- **Task 3:** Configure a database (like PostgreSQL) and explain the `DATABASES` setting in `settings.py`.
+
+### 6. Docker and Deployment
+
+You have a `Dockerfile` and `docker-compose.yml`.
+
+- **Task 1:** Explain each line of the `Dockerfile`. What is its purpose?
+- **Task 2:** Explain the `docker-compose.yml` file. What are the services defined in it?
+- **Task 3:** Build and run the docker container.
+- **Task 4:** How would you run migrations in a dockerized environment?
+
+### 7. Cron Jobs
+
+You have a `crons` directory.
+
+- **Task 1:** Explain how the `manage_crons.py` command works.
+- **Task 2:** Write a new cron job that runs every day and deactivates students who have not paid their fees (you might need to add a `fees_paid` field to the `Student` model).
+
+### 8. Testing
+
+You have a `service/tests.py` file.
+
+- **Task 1:** Write unit tests for your models.
+- **Task 2:** Write tests for your API endpoints. Test the list, detail, create, and update views.
+- **Task 3:** Test the management commands you wrote.
