@@ -1,11 +1,20 @@
 import os
 import sys
+import signal
+import subprocess
+from dotenv import load_dotenv
+
+load_dotenv()
+
 from service.management.commands import ManageCrons
+from service.utils import logger
 
 APP_ENVIRONMENT = os.getenv('APP_ENVIRONMENT', 'local')
+ENABLE_CRONS = os.getenv('ENABLE_CRONS', 'False').lower() in ('true', '1', 't')
 
 class Entrypoint:
     def __init__(self):
+        self.cron_manager = None
         self.setup_environment()
         self.start_cronjobs()
         self.runserver()
@@ -16,7 +25,7 @@ class Entrypoint:
         os.environ["PYTHONUNBUFFERED"] = "1"
 
     def runserver(self):
-        print(f"APP PID: {os.getpid()}")
+        logger.info(f"`runserver()` : App Process ID: {os.getpid()}")
         from django.core.management import execute_from_command_line
 
         command_args = sys.argv[1:]
@@ -43,10 +52,27 @@ class Entrypoint:
             "--worker-class", "uvicorn.workers.UvicornWorker",
             "--bind", f"0.0.0.0:{port}"
         ]
-        os.execvp(cmd[0], cmd)
+        
+        process = subprocess.Popen(cmd)
+
+        def shutdown(signum, frame):
+            logger.info(f"Received signal {signum}. Shutting down...")
+            if self.cron_manager:
+                self.cron_manager.shutdown()
+            process.terminate()
+            process.wait()
+            sys.exit(0)
+
+        signal.signal(signal.SIGTERM, shutdown)
+        signal.signal(signal.SIGINT, shutdown)
+
+        process.wait()
 
     def start_cronjobs(self):
-        ManageCrons()
+        if ENABLE_CRONS:
+            self.cron_manager = ManageCrons()
+        else:
+            logger.info("Crons Disabled")
 
 
 if __name__ == '__main__':
