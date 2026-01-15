@@ -1,10 +1,10 @@
 from django.contrib import admin
 from django.urls import path, include
 
-from service.views.healthcheck import HealthCheckView
+from service.views import *
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', HealthCheckView.as_view(), name='Healthcheck'),
+    path('', RootView.as_view(), name='Root'),
     path('api/v1/', include('service.urls_v1'))
 ]
