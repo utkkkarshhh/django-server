@@ -1,9 +1,13 @@
 import os
+import warnings
 from pathlib import Path
 
 from dotenv import load_dotenv
 
 load_dotenv()
+
+# Filter warning about synchronous iterators in StreamingHttpResponse (often from WhiteNoise)
+warnings.filterwarnings("ignore", message="StreamingHttpResponse must consume synchronous iterators", module="django.core.handlers.asgi")
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', '')
@@ -117,6 +121,11 @@ LOGGING = {
             "formatter":'verbose'
         },
     },
+    "filters": {
+        "skip_static": {
+            "()": "service.utils.logging_filters.StaticFileFilter",
+        },
+    },
     "loggers": {
         "django": {
             "handlers": ["console"],
@@ -130,6 +139,7 @@ LOGGING = {
         },
         "gunicorn.access": {
             "handlers": ["console"],
+            "filters": ["skip_static"],
             "level": "INFO",
             "propagate": False,
         },
@@ -140,6 +150,7 @@ LOGGING = {
         },
         "uvicorn.access": {
             "handlers": ["console"],
+            "filters": ["skip_static"],
             "level": "INFO",
             "propagate": False,
         },
