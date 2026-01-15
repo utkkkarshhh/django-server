@@ -1,6 +1,6 @@
 ## Practice Django 
 
-This repository was created to practice django in an interactive way from basics, ORM (Object Relational Mapping), DRF (Django REST Framework) to building an industry grade Django application with best coding practices.
+This repository was created to practice Django in an interactive way from basics, ORM (Object Relational Mapping), DRF (Django REST Framework) to building an industry grade Django application with best coding practices.
 
 #### Run Migrations
 - Run migrations and create tables
