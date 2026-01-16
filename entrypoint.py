@@ -45,10 +45,14 @@ class Entrypoint:
             ) from exc
 
     def run_gunicorn_asgi(self, port: str):
+        workers = "4"
+        if os.environ.get('DJANGO_DEBUG', '') != 'False':
+            workers = "1"
+
         cmd = [
             sys.executable, "-m", "gunicorn",
             "django_server.asgi:application",
-            "--workers", "4",
+            "--workers", workers,
             "--worker-class", "uvicorn.workers.UvicornWorker",
             "--bind", f"0.0.0.0:{port}"
         ]

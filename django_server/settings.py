@@ -1,4 +1,5 @@
 import os
+import socket
 import warnings
 from pathlib import Path
 
@@ -6,7 +7,6 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-# Filter warning about synchronous iterators in StreamingHttpResponse (often from WhiteNoise)
 warnings.filterwarnings("ignore", message="StreamingHttpResponse must consume synchronous iterators", module="django.core.handlers.asgi")
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -39,6 +39,12 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
+
+if DEBUG:
+    INSTALLED_APPS += ["debug_toolbar"]
+    MIDDLEWARE.insert(0, "debug_toolbar.middleware.DebugToolbarMiddleware")
+    hostname, _, ips = socket.gethostbyname_ex(socket.gethostname())
+    INTERNAL_IPS = ["127.0.0.1"] + ips + [".".join(ip.split(".")[:-1] + ["1"]) for ip in ips]
 
 ROOT_URLCONF = 'django_server.urls'
 
